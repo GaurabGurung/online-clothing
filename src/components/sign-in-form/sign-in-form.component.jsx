@@ -92,18 +92,6 @@ const resetFormFields = () => {
                         buttonType= 'google' 
                     > Google Sign In </Button>
                 </div>
-                <div className='buttons-container'>
-                    <Button 
-                        type= 'submit' 
-                    > Sign out</Button>
-                    <Button 
-                        type = 'button'
-                        onClick = {signInWithGoogle}
-                        buttonType= 'google' 
-                    > Google Sign In </Button>
-                </div>
-
-
                 </form>
 
         </div>
