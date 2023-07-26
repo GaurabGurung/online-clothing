@@ -1,8 +1,9 @@
 import { Outlet, Link } from "react-router-dom";
-import { Fragment, useContext } from "react";
+import { Fragment, useContext, useState } from "react";
 
 import CartIcon from "../../components/cart-icon/cart-icon.component";
 import CartDropdown from "../../components/cart-dropdown/cart-dropdown.component";
+import { CartContext } from "../../contexts/cart.context";
 
 import { UserContext } from '../../contexts/user.context';
 import { ReactComponent as CrwnLogo } from "../../assets/crown.svg";
@@ -13,7 +14,8 @@ import './navigation.style.scss'
 const Navigation = () => {
 
   const { currentUser  } = useContext(UserContext);
-
+  const { isCartOpen } = useContext ( CartContext );
+ 
     return (
       <Fragment>
         <div className="navigation">
@@ -35,7 +37,7 @@ const Navigation = () => {
             )}
           <CartIcon />
           </div>
-          <CartDropdown />
+          {isCartOpen && <CartDropdown />}
         </div>
         <Outlet/>
       </Fragment>
