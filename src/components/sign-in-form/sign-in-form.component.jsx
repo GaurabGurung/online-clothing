@@ -1,101 +1,92 @@
-import { useState, useContext } from 'react';
-import FormInput from "../form-input/form-input.component";
 import Button from '../button/button.component';
+import { useState } from 'react';
+import {  signInAuthUserWithEmailAndPassword, createUserDocumentFromAuth, signInWithGooglePopup , } from '../../utils/firebase/firebase.utils';
+import FormInput from '../form-input/form-input.component';
 import './sign-in-form.styles.scss'
-import { signInWithGooglePopup, signInAuthUserWithEmailAndPassword,  } from '../../utils/firebase/firebase.utils'
-
-
 
 const defaultFormFields = {
-    displayName: '',
-    email: '',
-    password: '',
-    confirmPassword: ''
+    email : '',
+    password : '',
 }
 
 const SignInForm = () => {
-   
-    const [formFields, setFromFields ] = useState(defaultFormFields);
-    const {email,  password }= formFields;
 
+
+    const [ formFields , setFormFields ] = useState (defaultFormFields);
+    const { email, password} = formFields;
 
     const resetFormFields = () => {
-        setFromFields(defaultFormFields);
+        setFormFields(defaultFormFields);
     }
-
+    
     const signInWithGoogle = async () => {
-        const {user} = await signInWithGooglePopup();
-
-    }
-
-    const handleChange = (event)=>{
-        const {name, value} = event.target;
-
-        setFromFields({...formFields, [name]: value})
-    }
-
+        await signInWithGooglePopup();
+   }
 
     const handleSubmit = async (event)=> {
         event.preventDefault();
 
-
         try {
-            const { user } = await signInAuthUserWithEmailAndPassword ( email, password ) ;
+            const {user}= await signInAuthUserWithEmailAndPassword (email, password);
+            resetFormFields ();
+            
+               }catch(error){
+                    switch (error.code) {
+                    case 'auth/user-not-found' : 
+                            alert('User not found');
+                            break;
+                        
+                        case 'auth/wrong-password' :
+                            alert (' Wrong Password');
+                            break;
 
-            resetFormFields();
-
-        } catch (error) {
-            switch (error.code){
-                case 'auth/wrong-password':
-                    alert('Incorrect password');
-                    break;
-                case 'auth/user-not-found':
-                    alert ('User not found');
-                    break;
-                default:
-                    console.log(error);
+                        default:
+                            console.log(error)    
+                }
             }
+        };
 
-        }
-    }
+        const handleChange = (event) => {
+        const {name, value} = event.target;
+        setFormFields({...formFields, [name]:value});
+    };
 
-    return(
+    return (
         <div className='sign-in-container'>
-            <h2>Already have an Account?</h2>
-            <span>Sign in with your email and password </span>
-                <form onSubmit= {handleSubmit}>
+            <h2> Already have an account?</h2>
+            <span> Sign in with your email and password </span>
+            <form onSubmit={handleSubmit}>
+
                 <FormInput 
-                    type="email" 
-                    name= 'email' 
-                    required 
+                    type= "email" 
+                    name='email'
+                    required       
                     label= 'Email'
-                    value= {email}
-                    onChange={handleChange}
+                    onChange={ handleChange }
+                    value = {email}
                 />
-
-                <FormInput 
-                    type="password" 
-                    name= 'password' 
-                    required 
-                    label= 'Password'
-                    value= {password}
-                    onChange={handleChange}
+                <FormInput
+                    type= "password" 
+                    name='password'
+                    required
+                    label= 'Password' 
+                    onChange={ handleChange }  
+                    value = {password} 
                 />
-
                 <div className='buttons-container'>
-                    <Button 
-                        type= 'submit' 
-                    > Sign In</Button>
+                    < Button type = 'submit'>
+                        Sign in
+                    </Button>
                     <Button 
                         type = 'button'
-                        onClick = {signInWithGoogle}
-                        buttonType= 'google' 
-                    > Google Sign In </Button>
+                        onClick= {signInWithGoogle}
+                        buttonType='google'
+                    > Google sign in 
+                    </Button>
                 </div>
-                </form>
 
+            </form>
         </div>
-
     )
 }
 

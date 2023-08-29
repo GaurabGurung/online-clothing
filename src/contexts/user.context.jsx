@@ -1,29 +1,39 @@
-import {createContext, useState, useEffect} from 'react';
-import { onAuthStateChangedListener , createUserDocumentFromAuth} from '../utils/firebase/firebase.utils';
+import { createContext, useState , useEffect} from 'react';
+import { onAuthStateChangedListener, signOutUser, createUserDocumentFromAuth } from '../utils/firebase/firebase.utils';
 
 //as the actual value you want to access
 export const UserContext = createContext({
-    currentUser: null,
-    setCurrentUser : () => null,
+
+    currentUser : null,
+    setCurrentUser: () => null,
+
 });
 
 
-export const UserProvider = ({ children }) => {
-    const [ currentUser, setCurrentUser ] = useState (null);
-    const value = { currentUser, setCurrentUser };
 
-    useEffect (()=> {
-        const unsubscribe = onAuthStateChangedListener((user) => {
+export const UserProvider= ({children}) => {
+
+    const [currentUser, setCurrentUser] = useState (null);
+    const value = {currentUser, setCurrentUser};
+
+
+    useEffect (()=>{
+        const unsubscribe = onAuthStateChangedListener ((user) => {
             if (user){
-                createUserDocumentFromAuth (user);
-                console.log('user is true');
-                console.log(user)
-            } else { console.log('user is false')}
-            setCurrentUser(user);
-
-        })
+                createUserDocumentFromAuth(user);
+            }
+           setCurrentUser(user)
+        });
         return unsubscribe;
-    },[])
+    },[]);
+    
 
-    return <UserContext.Provider value= { value } > {children} </UserContext.Provider>
-};
+    return (
+        <UserContext.Provider value= {value}> {children} </UserContext.Provider> 
+        // ".Provider" is the component that will wraps around any components that needs access to the values inside
+ 
+    )
+}
+
+
+
